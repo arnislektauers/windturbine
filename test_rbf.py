@@ -55,10 +55,10 @@ class Network(nn.Module):
 if __name__ == '__main__':
     # Generating a dataset for a given decision boundary
 
-    samples = 400
+    samples = 5000
 
-    raining_set = FeatureDataSet(1, 400)
-    test_set = FeatureDataSet(401, 444)
+    training_set = FeatureDataSet(1, 5000)
+    test_set = FeatureDataSet(5001, 5555)
 
     # Instantiating and training an RBF network with the Gaussian basis function
     # This network receives a 2-dimensional input, transforms it into a 40-dimensional
@@ -67,23 +67,32 @@ if __name__ == '__main__':
 
     # To add more layers, change the layer_widths and layer_centres lists
 
-    layer_widths = [3993, 1]
-    layer_centres = [40]
+    layer_widths = [3993, 3]
+    layer_centres = [80]
     basis_func = rbf.gaussian
 
     rbf_net = Network(layer_widths, layer_centres, basis_func)
-    rbf_net.fit(raining_set, epochs=300, batch_size=samples, lr=0.01, loss_func=nn.MSELoss())
+    rbf_net.fit(training_set, epochs=50, batch_size=samples, lr=0.01, loss_func=nn.MSELoss())
     # BCEWithLogitsLoss
     rbf_net.eval()
 
     # Plotting the ideal and learned decision boundaries
 
-  #  test_dataloader = DataLoader(test_set, batch_size=samples)
-#
-#    with torch.no_grad():
-#        for X, y in test_dataloader:
-#            xd, yd = X.to(device), y.to(device)
-#            pred = rbf_net(xd)
+    test_dataloader = DataLoader(test_set, batch_size=samples)
+
+    lossfn = nn.MSELoss()
+
+    with torch.no_grad():
+        for X, y in test_dataloader:
+            #xd, yd = X.to(device), y.to(device)
+            xd = X
+            yd = y
+            pred = rbf_net(xd)
+
+            loss = lossfn(pred, yd)
+            sys.stdout.write('Loss: %f' % (loss.item()))
+            sys.stdout.flush()
+
 
 #    fig, ax = plt.subplots(figsize=(16, 8), nrows=1, ncols=2)
 #    plt.show()

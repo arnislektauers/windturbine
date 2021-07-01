@@ -14,7 +14,7 @@ class FeatureDataSet(Dataset):
     def __init__(self, start_idx, end_idx):
         count = end_idx + 1 - start_idx
         x_train = np.zeros((count, 3993))
-        y_train = np.zeros((count, 1))
+        y_train = np.zeros((count, 3))
         i = 0
         for idx in range(start_idx, end_idx + 1, 1):
             if idx % 100 == 0:
@@ -39,7 +39,7 @@ class FeatureDataSet(Dataset):
             # x_train = sc.fit_transform(matrix_data)
 
             x_train[i] = matrix_data.to_numpy().flatten()
-            y_train[i] = label_data.to_numpy()[0].flatten()
+            y_train[i] = label_data.to_numpy().flatten()
             i += 1
 
         x_train = preprocessing.MaxAbsScaler().fit_transform(x_train)
